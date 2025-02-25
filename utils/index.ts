@@ -44,27 +44,49 @@ export const deleteSearchParams = (type: string) => {
 };
 
 export async function fetchCars(filters: FilterProps) {
-	const { manufacturer, year, model, limit, fuel } = filters;
+    const { manufacturer, year, model, limit, fuel } = filters;
 
-	// Set the required headers for the API request
-	const headers: HeadersInit = {
-		"X-RapidAPI-Key": process.env.NEXT_PUBLIC_RAPID_API_KEY || "",
-		"X-RapidAPI-Host": "cars-by-api-ninjas.p.rapidapi.com",
-	};
+    // Construct query parameters dynamically
+    const queryParams = new URLSearchParams();
 
-	// Set the required headers for the API request
-	const response = await fetch(
-		`https://cars-by-api-ninjas.p.rapidapi.com/v1/cars?make=${manufacturer}&year=${year}&model=${model}&limit=${limit}&fuel_type=${fuel}`,
-		{
-			headers: headers,
-		}
-	);
+    if (manufacturer) queryParams.append("make", manufacturer);
+    if (year) queryParams.append("year", year.toString());
+    if (model) queryParams.append("model", model);
+    if (limit) queryParams.append("limit", limit.toString());
+    if (fuel) queryParams.append("fuel_type", fuel);
 
-	// Parse the response as JSON
-	const result = await response.json();
+    // If all parameters are empty, make a general request
+    const apiUrl = `https://cars-by-api-ninjas.p.rapidapi.com/v1/cars${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
 
-	return result;
+    // Set the required headers for the API request
+    const headers: HeadersInit = {
+        "X-RapidAPI-Key": process.env.NEXT_PUBLIC_RAPID_API_KEY || "",
+        "X-RapidAPI-Host": "cars-by-api-ninjas.p.rapidapi.com",
+    };
+
+    try {
+        const response = await fetch(apiUrl, { headers });
+
+        // Check if the response is valid
+        if (!response.ok) {
+            throw new Error(`API request failed with status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        // If the response is empty, make a general call
+        if (Array.isArray(result) && result.length === 0) {
+            console.warn("Empty response received. Fetching general data...");
+            return fetchCars({ manufacturer: "Toyota", limit: 10 }); // Default general call
+        }
+
+        return result;
+    } catch (error) {
+        console.error("Error fetching car data:", error);
+        return null;
+    }
 }
+
 
 export const generateCarImageUrl = (car: CarProps, angle?: string) => {
 	const url = new URL("https://cdn.imagin.studio/getimage");
