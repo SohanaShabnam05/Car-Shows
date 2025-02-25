@@ -35,4 +35,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ## Deplyed On vercel link
 
-https://car-shows-jrpygxkvo-shadabimran07.vercel.app
+https://car-shows-omega.vercel.app/
