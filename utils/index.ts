@@ -55,10 +55,9 @@ export async function fetchCars(filters: FilterProps) {
     if (limit) queryParams.append("limit", limit.toString());
     if (fuel) queryParams.append("fuel_type", fuel);
 
-    // If all parameters are empty, make a general request
+
     const apiUrl = `https://cars-by-api-ninjas.p.rapidapi.com/v1/cars${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
 
-    // Set the required headers for the API request
     const headers: HeadersInit = {
         "X-RapidAPI-Key": process.env.NEXT_PUBLIC_RAPID_API_KEY || "",
         "X-RapidAPI-Host": "cars-by-api-ninjas.p.rapidapi.com",
