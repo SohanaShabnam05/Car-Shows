@@ -5,10 +5,10 @@ import { CarCard, ShowMore, SearchBar, CustomFilter, Hero } from "@/components";
 
 export default async function Home({ searchParams }: HomeProps) {
 	const allCars = await fetchCars({
-		manufacturer: searchParams.manufacturer || "",
-		year: searchParams.year || 2022,
+		manufacturer: searchParams.manufacturer || "Audi",
+		year: searchParams.year,
 		fuel: searchParams.fuel || "",
-		limit: searchParams.limit || 10,
+		limit: searchParams.limit,
 		model: searchParams.model || "",
 	});
 

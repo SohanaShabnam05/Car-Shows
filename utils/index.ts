@@ -67,14 +67,13 @@ export async function fetchCars(filters: FilterProps) {
     try {
         const response = await fetch(apiUrl, { headers });
 
-        // Check if the response is valid
+
         if (!response.ok) {
             throw new Error(`API request failed with status: ${response.status}`);
         }
-
         const result = await response.json();
 
-        // If the response is empty, make a general call
+
         if (Array.isArray(result) && result.length === 0) {
             console.warn("Empty response received. Fetching general data...");
             return fetchCars({ manufacturer: "Toyota", limit: 10 }); // Default general call
